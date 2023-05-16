@@ -1,0 +1,105 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+
+import weka.classifiers.Classifier;
+import weka.classifiers.evaluation.Evaluation;
+import weka.classifiers.trees.RandomForest;
+import weka.core.DenseInstance;
+import weka.core.Instance;
+import weka.core.Instances;
+
+public class DiabetesPrediction {
+    private static final String CSV_FILE_PATH = "diabetes.csv";
+
+    public static void main(String[] args) {
+        try {
+            Instances dataset = loadDataset();
+
+            Instances[] splitData = splitDataset(dataset, 0.3);
+
+            Instances trainData = splitData[0];
+            Instances testData = splitData[1];
+
+            Classifier rfModel = buildRandomForestModel(trainData);
+
+            evaluateModel(rfModel, trainData, "Training");
+            evaluateModel(rfModel, testData, "Testing");
+
+            predictOutcome(rfModel, 6, 148, 72, 35, 0, 33.6, 0.627, 50);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static Instances loadDataset() throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(CSV_FILE_PATH));
+             CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader())) {
+
+            Instances dataset = new Instances("diabetes", getAttributeInfo(), 0);
+            for (CSVRecord record : csvParser) {
+                Instance instance = createInstance(record);
+                dataset.add(instance);
+            }
+
+            return dataset;
+        }
+    }
+
+    private static Instances[] splitDataset(Instances dataset, double splitRatio) {
+        dataset.randomize(new java.util.Random(42));
+
+        int trainSize = (int) Math.round(dataset.numInstances() * splitRatio);
+        int testSize = dataset.numInstances() - trainSize;
+
+        Instances trainData = new Instances(dataset, 0, trainSize);
+        Instances testData = new Instances(dataset, trainSize, testSize);
+
+        return new Instances[]{trainData, testData};
+    }
+
+    private static Classifier buildRandomForestModel(Instances trainData) throws Exception {
+        trainData.setClassIndex(trainData.numAttributes() - 1);
+
+        Classifier rfModel = new RandomForest();
+        rfModel.buildClassifier(trainData);
+
+        return rfModel;
+    }
+
+    private static void evaluateModel(Classifier model, Instances data, String datasetType) throws Exception {
+        Evaluation evaluation = new Evaluation(data);
+        evaluation.evaluateModel(model, data);
+
+        System.out.println(datasetType + " Accuracy: " + evaluation.pctCorrect() + "%");
+    }
+
+    private static Instance createInstance(CSVRecord record) {
+        Instance instance = new DenseInstance(8);
+
+        instance.setValue(0, Double.parseDouble(record.get("Pregnancies")));
+        instance.setValue(1, Double.parseDouble(record.get("Glucose")));
+        instance.setValue(2, Double.parseDouble(record.get("BloodPressure")));
+        instance.setValue(3, Double.parseDouble(record.get("SkinThickness")));
+        instance.setValue(4, Double.parseDouble(record.get("Insulin")));
+        instance.setValue(5, Double.parseDouble(record.get("BMI")));
+        instance.setValue(6, Double.parseDouble(record.get("DiabetesPedigreeFunction")));
+        instance.setValue(7, Double.parseDouble(record.get("Age")));
+
+        return instance;
+    }
+
+    private static String[] getAttributeInfo() {
+        return new String[]{
+                "Pregnancies",
+                "Glucose",
+                "BloodPressure",
+                "SkinThickness",
+                "Insulin",
+                "BMI",
+                "
