@@ -1,0 +1,52 @@
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@SpringBootApplication
+public class DiabetesPredictionApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DiabetesPredictionApplication.class, args);
+    }
+}
+
+@Controller
+class PredictionController {
+    @GetMapping("/")
+    public String index() {
+        return "index";
+    }
+
+    @PostMapping("/predict")
+    public String predict(@RequestParam("Pregnancies") int pregnancies,
+                          @RequestParam("Glucose") int glucose,
+                          @RequestParam("BloodPressure") int bloodPressure,
+                          @RequestParam("SkinThickness") int skinThickness,
+                          @RequestParam("Insulin") int insulin,
+                          @RequestParam("BMI") double bmi,
+                          @RequestParam("DiabetesPedigreeFunction") double diabetesPedigreeFunction,
+                          @RequestParam("Age") int age,
+                          Model model) {
+
+        int result = RFPredict(pregnancies, glucose, bloodPressure, skinThickness, insulin, bmi, diabetesPedigreeFunction, age);
+
+        if (result == 1) {
+            model.addAttribute("result", "Diabetic Patient, Needs Treatment :(");
+        } else if (result == 0) {
+            model.addAttribute("result", "Non-Diabetic Patient, But Be Conscious :)");
+        }
+
+        return "result";
+    }
+
+    private int RFPredict(int pregnancies, int glucose, int bloodPressure, int skinThickness, int insulin,
+                          double bmi, double diabetesPedigreeFunction, int age) {
+        // Implement your prediction logic here
+        // You can use the RandomForestClassifier or any other model for the prediction
+        // Return the predicted result (0 or 1)
+        return 0;
+    }
+}
