@@ -1,0 +1,95 @@
+import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
+import org.springframework.validation.Validator;
+
+public class InputForm implements Validator {
+    private float pregnancies;
+    private float glucose;
+    private float bloodPressure;
+    private float skinThickness;
+    private float insulin;
+    private float bmi;
+    private float diabetesPedigreeFunction;
+    private float age;
+
+    public float getPregnancies() {
+        return pregnancies;
+    }
+
+    public void setPregnancies(float pregnancies) {
+        this.pregnancies = pregnancies;
+    }
+
+    public float getGlucose() {
+        return glucose;
+    }
+
+    public void setGlucose(float glucose) {
+        this.glucose = glucose;
+    }
+
+    public float getBloodPressure() {
+        return bloodPressure;
+    }
+
+    public void setBloodPressure(float bloodPressure) {
+        this.bloodPressure = bloodPressure;
+    }
+
+    public float getSkinThickness() {
+        return skinThickness;
+    }
+
+    public void setSkinThickness(float skinThickness) {
+        this.skinThickness = skinThickness;
+    }
+
+    public float getInsulin() {
+        return insulin;
+    }
+
+    public void setInsulin(float insulin) {
+        this.insulin = insulin;
+    }
+
+    public float getBmi() {
+        return bmi;
+    }
+
+    public void setBmi(float bmi) {
+        this.bmi = bmi;
+    }
+
+    public float getDiabetesPedigreeFunction() {
+        return diabetesPedigreeFunction;
+    }
+
+    public void setDiabetesPedigreeFunction(float diabetesPedigreeFunction) {
+        this.diabetesPedigreeFunction = diabetesPedigreeFunction;
+    }
+
+    public float getAge() {
+        return age;
+    }
+
+    public void setAge(float age) {
+        this.age = age;
+    }
+
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return InputForm.class.isAssignableFrom(clazz);
+    }
+
+    @Override
+    public void validate(Object target, Errors errors) {
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "pregnancies", "field.required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "glucose", "field.required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "bloodPressure", "field.required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "skinThickness", "field.required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "insulin", "field.required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "bmi", "field.required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "diabetesPedigreeFunction", "field.required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "age", "field.required");
+    }
+}
