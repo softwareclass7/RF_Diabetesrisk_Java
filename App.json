@@ -80,23 +80,21 @@ public class DiabetesPrediction {
     }
 
     private static Instance createInstance(CSVRecord record) {
-        Instance instance = new DenseInstance(8);
+        Instance instance = new DenseInstance(7);
 
-        instance.setValue(0, Double.parseDouble(record.get("Pregnancies")));
-        instance.setValue(1, Double.parseDouble(record.get("Glucose")));
-        instance.setValue(2, Double.parseDouble(record.get("BloodPressure")));
-        instance.setValue(3, Double.parseDouble(record.get("SkinThickness")));
-        instance.setValue(4, Double.parseDouble(record.get("Insulin")));
-        instance.setValue(5, Double.parseDouble(record.get("BMI")));
-        instance.setValue(6, Double.parseDouble(record.get("DiabetesPedigreeFunction")));
-        instance.setValue(7, Double.parseDouble(record.get("Age")));
+        instance.setValue(0, Double.parseDouble(record.get("Glucose")));
+        instance.setValue(1, Double.parseDouble(record.get("BloodPressure")));
+        instance.setValue(2, Double.parseDouble(record.get("SkinThickness")));
+        instance.setValue(3, Double.parseDouble(record.get("Insulin")));
+        instance.setValue(4, Double.parseDouble(record.get("BMI")));
+        instance.setValue(5, Double.parseDouble(record.get("DiabetesPedigreeFunction")));
+        instance.setValue(6, Double.parseDouble(record.get("Age")));
 
         return instance;
     }
 
     private static String[] getAttributeInfo() {
         return new String[]{
-                "Pregnancies",
                 "Glucose",
                 "BloodPressure",
                 "SkinThickness",
